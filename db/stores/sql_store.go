@@ -12,7 +12,7 @@ type sqlStore struct {
 	productStore ProductStore
 }
 
-func NewSqlStore(db *gorm.DB) RepoBase {
+func NewSqlStore(db *gorm.DB) StoreBase {
 	return &sqlStore{db: db,
 		userStore:    NewUserStore(db),
 		productStore: NewProductStore(db)}
@@ -26,7 +26,7 @@ func (s sqlStore) Products() ProductStore {
 	return s.productStore
 }
 
-func (s sqlStore) WithTransaction(ctx context.Context, fn func(r RepoBase) error) error {
+func (s sqlStore) WithTransaction(ctx context.Context, fn func(r StoreBase) error) error {
 	tx := s.db.WithContext(ctx).Begin()
 	if tx.Error != nil {
 		return tx.Error

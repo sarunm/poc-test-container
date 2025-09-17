@@ -5,7 +5,7 @@ import (
 )
 
 type userStore struct {
-	baseStore
+	storeBase
 }
 
 type UserStore interface {
@@ -13,10 +13,14 @@ type UserStore interface {
 }
 
 func NewUserStore(db *gorm.DB) UserStore {
-	return &userStore{baseStore{db: db}}
+	return &userStore{storeBase{db: db}}
 }
 
 func (u userStore) Create(user *User) (*User, error) {
-	//TODO implement me
-	panic("implement me")
+	result := &User{}
+	query := u.db.Create(user).Find(&result)
+	if query.Error != nil {
+		return nil, query.Error
+	}
+	return result, nil
 }
