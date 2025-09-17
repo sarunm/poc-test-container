@@ -15,11 +15,27 @@ func NewProductHandler(store stores.StoreBase) *ProductHandler {
 	}
 }
 
+type CreateProductRequest struct {
+	Name  string `json:"name"`
+	Price int    `json:"price"`
+}
+
+func (c *CreateProductRequest) toProductModel() *stores.Product {
+	return &stores.Product{
+		Name:  c.Name,
+		Price: c.Price,
+	}
+}
+
 func (h *ProductHandler) Create(c *gin.Context) {
 
-	product := &stores.Product{}
+	var req CreateProductRequest
+	err := c.ShouldBindBodyWithJSON(&req)
+	if err != nil {
+		panic(err)
+	}
 
-	createdProduct, err := h.store.Products().Create(product)
+	createdProduct, err := h.store.Products().Create(req.toProductModel())
 	if err != nil {
 		panic(err)
 	}

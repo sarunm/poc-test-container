@@ -4,19 +4,23 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sarunm/poc-test-container/db/stores"
 	"github.com/sarunm/poc-test-container/handlers"
+	"github.com/sarunm/poc-test-container/middlewares"
+	"log/slog"
 	"net/http"
+	"os"
 )
 
 func NewRoutes(store stores.StoreBase) http.Handler {
 	r := gin.Default()
-
-	productRoutes(r, store)
-	userRoutes(r, store)
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	api := r.Group("/api", middlewares.GlobalExceptionHandlerAndLogger(logger))
+	productRoutes(api, store)
+	userRoutes(api, store)
 
 	return r
 }
 
-func userRoutes(r *gin.Engine, store stores.StoreBase) gin.IRoutes {
+func userRoutes(r *gin.RouterGroup, store stores.StoreBase) gin.IRoutes {
 	user := handlers.NewUserHandler(store)
 
 	u := r.Group("/user")
@@ -27,7 +31,7 @@ func userRoutes(r *gin.Engine, store stores.StoreBase) gin.IRoutes {
 	return r
 }
 
-func productRoutes(r *gin.Engine, store stores.StoreBase) gin.IRoutes {
+func productRoutes(r *gin.RouterGroup, store stores.StoreBase) gin.IRoutes {
 	product := handlers.NewProductHandler(store)
 
 	p := r.Group("/product")
