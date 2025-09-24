@@ -6,7 +6,7 @@ import (
 )
 
 func Test_UserStore_Create_Success(t *testing.T) {
-	s := setupMockStore(t)
+	s := SetupMockStore(t)
 	name := "newuser"
 	user, err := s.Users().Create(&User{Name: name})
 	assert.Nil(t, err)
@@ -16,7 +16,7 @@ func Test_UserStore_Create_Success(t *testing.T) {
 }
 
 func Test_UserStore_Create_Error(t *testing.T) {
-	s := setupMockStore(t)
+	s := SetupMockStore(t)
 	// สร้าง user ที่มี ID ซ้ำกันเพื่อทดสอบ error
 	_, err := s.Users().Create(&User{ID: 1, Name: "user1"})
 	assert.Nil(t, err)

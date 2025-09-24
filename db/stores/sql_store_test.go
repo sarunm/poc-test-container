@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func setupMockStore(t *testing.T) StoreBase {
+func SetupMockStore(t *testing.T) StoreBase {
 	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
 	assert.NoError(t, err)
 
@@ -21,7 +21,7 @@ func setupMockStore(t *testing.T) StoreBase {
 
 func Test_WithTransaction_Success(t *testing.T) {
 
-	store := setupMockStore(t)
+	store := SetupMockStore(t)
 	err := store.WithTransaction(nil, func(r StoreBase) error {
 		user, err := r.Users().Create(&User{Name: "testuser"})
 		assert.NoError(t, err)
@@ -38,7 +38,7 @@ func Test_WithTransaction_Success(t *testing.T) {
 }
 
 func Test_WithTransaction_Fail(t *testing.T) {
-	store := setupMockStore(t)
+	store := SetupMockStore(t)
 	err := store.WithTransaction(nil, func(r StoreBase) error {
 		_, err := r.Users().Create(&User{Name: "testuser"})
 		assert.NoError(t, err)
