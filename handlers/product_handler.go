@@ -32,12 +32,17 @@ func (h *ProductHandler) Create(c *gin.Context) {
 	var req CreateProductRequest
 	err := c.ShouldBindBodyWithJSON(&req)
 	if err != nil {
-		panic(err)
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
 	}
 
-	createdProduct, err := h.store.Products().Create(req.toProductModel())
+	createdProduct, err := h.store.Products().Create(&stores.Product{
+		Name:  req.Name,
+		Price: req.Price,
+	})
 	if err != nil {
-		panic(err)
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.JSON(200, createdProduct)
