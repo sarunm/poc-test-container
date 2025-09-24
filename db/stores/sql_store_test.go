@@ -13,6 +13,7 @@ func setupMockStore(t *testing.T) StoreBase {
 
 	// สร้างตารางที่จำเป็น
 	err = db.AutoMigrate(&User{})
+	err = db.AutoMigrate(&Product{})
 	assert.NoError(t, err)
 
 	return NewSqlStore(db)
